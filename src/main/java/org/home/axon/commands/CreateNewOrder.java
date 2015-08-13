@@ -1,12 +1,11 @@
-package org.home.axon;
+package org.home.axon.commands;
 
-
-public class OrderCommandImpl implements OrderCommand {
+public class CreateNewOrder {
     private final String customer;
     private final String orderName;
     private final String description;
 
-    public OrderCommandImpl(String customer, String orderName, String description) {
+    public CreateNewOrder(String customer, String orderName, String description) {
         this.customer = customer;
         this.orderName = orderName;
         this.description = description;
@@ -22,14 +21,5 @@ public class OrderCommandImpl implements OrderCommand {
 
     public String getDescription() {
         return description;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderCommand{" +
-                "customer='" + customer + '\'' +
-                ", orderName='" + orderName + '\'' +
-                ", description='" + description + '\'' +
-                '}';
     }
 }

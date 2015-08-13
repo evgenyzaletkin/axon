@@ -7,6 +7,11 @@ import org.axonframework.commandhandling.annotation.AnnotationCommandHandlerBean
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.commandhandling.interceptors.BeanValidationInterceptor;
+
+import org.home.axon.aggregates.Order;
+import org.home.axon.commands.handlers.OrderCommandHandler;
+import org.home.axon.events.handlers.OrderEventHandler;
+import org.home.axon.repositories.InMemoryRepository;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Collections;
@@ -21,6 +26,12 @@ public class Configuration {
     }
 
     @Bean
+    public InMemoryRepository<Order> ordersRepository() {
+        return new InMemoryRepository<>(Order.class);
+    }
+
+
+    @Bean
     public CommandBus commandBus() {
         SimpleCommandBus commandBus = new SimpleCommandBus();
         commandBus.setHandlerInterceptors(interceptors());
@@ -29,7 +40,12 @@ public class Configuration {
 
     @Bean
     public OrderCommandHandler orderCommandHandler() {
-        return new OrderCommandHandler();
+        return new OrderCommandHandler(ordersRepository());
+    }
+
+    @Bean
+    public OrderEventHandler orderEventHandler() {
+        return new OrderEventHandler();
     }
 
     @Bean
