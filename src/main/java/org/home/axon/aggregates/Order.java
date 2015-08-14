@@ -1,9 +1,9 @@
 package org.home.axon.aggregates;
 
-import org.axonframework.domain.AbstractAggregateRoot;
+import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.home.axon.events.OrderCreatedEvent;
 
-public class Order extends AbstractAggregateRoot<String> {
+public class Order extends AbstractAnnotatedAggregateRoot<String> {
 
     private String orderName;
     private String customer;

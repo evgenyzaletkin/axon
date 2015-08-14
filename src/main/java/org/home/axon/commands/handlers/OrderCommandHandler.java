@@ -1,15 +1,15 @@
 package org.home.axon.commands.handlers;
 
 import org.axonframework.commandhandling.annotation.CommandHandler;
+import org.axonframework.repository.Repository;
 import org.home.axon.aggregates.Order;
 import org.home.axon.commands.CreateNewOrder;
-import org.home.axon.repositories.InMemoryRepository;
 
 public class OrderCommandHandler {
 
-    private final InMemoryRepository<Order> ordersRepository;
+    private final Repository<Order> ordersRepository;
 
-    public OrderCommandHandler(InMemoryRepository<Order> ordersRepository) {
+    public OrderCommandHandler(Repository<Order> ordersRepository) {
         this.ordersRepository = ordersRepository;
     }
 
