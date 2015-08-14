@@ -5,6 +5,7 @@ import org.axonframework.test.Fixtures;
 import org.home.axon.aggregates.Order;
 import org.home.axon.commands.CreateNewOrder;
 import org.home.axon.commands.handlers.OrderCommandHandler;
+import org.home.axon.config.AxonConfiguration;
 import org.home.axon.events.OrderCreatedEvent;
 import org.home.axon.repositories.InMemoryRepository;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = Configuration.class)
+@ContextConfiguration(classes = AxonConfiguration.class)
 public class GenericTest {
 
 

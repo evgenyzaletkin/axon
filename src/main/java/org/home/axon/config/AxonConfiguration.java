@@ -1,4 +1,4 @@
-package org.home.axon;
+package org.home.axon.config;
 
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.CommandHandlerInterceptor;
@@ -7,21 +7,29 @@ import org.axonframework.commandhandling.annotation.AnnotationCommandHandlerBean
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.commandhandling.interceptors.BeanValidationInterceptor;
-
+import org.axonframework.common.jpa.SimpleEntityManagerProvider;
 import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventhandling.annotation.AnnotationEventListenerBeanPostProcessor;
+import org.axonframework.repository.GenericJpaRepository;
+import org.axonframework.repository.Repository;
+import org.home.axon.AxonCommandsService;
 import org.home.axon.aggregates.Order;
 import org.home.axon.commands.handlers.OrderCommandHandler;
 import org.home.axon.events.handlers.OrderEventHandler;
-import org.home.axon.repositories.InMemoryRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.Collections;
 import java.util.List;
 
-@org.springframework.context.annotation.Configuration
-public class Configuration {
+@Configuration
+@DependsOn("ormConfiguration")
+@EnableTransactionManagement
+public class AxonConfiguration {
 
 
     private List<? extends CommandHandlerInterceptor> interceptors() {
@@ -33,13 +41,17 @@ public class Configuration {
         return new SimpleEventBus();
     }
 
-    @Bean
-    public InMemoryRepository<Order> ordersRepository(EventBus eventBus) {
-        InMemoryRepository<Order> orderInMemoryRepository = new InMemoryRepository<>(Order.class);
-        orderInMemoryRepository.setEventBus(eventBus);
-        return orderInMemoryRepository;
-    }
+//    @Bean
+//    public InMemoryRepository<Order> ordersRepository(EventBus eventBus) {
+//        InMemoryRepository<Order> orderInMemoryRepository = new InMemoryRepository<>(Order.class);
+//        orderInMemoryRepository.setEventBus(eventBus);
+//        return orderInMemoryRepository;
+//    }
 
+    @Bean
+    public AxonCommandsService axonCommandsService(CommandGateway commandGateway, EntityManagerFactory emf) {
+        return new AxonCommandsService(commandGateway, emf);
+    }
 
     @Bean
     public CommandBus commandBus() {
@@ -49,7 +61,7 @@ public class Configuration {
     }
 
     @Bean
-    public OrderCommandHandler orderCommandHandler(InMemoryRepository<Order> repository) {
+    public OrderCommandHandler orderCommandHandler(Repository<Order> repository) {
         return new OrderCommandHandler(repository);
     }
 
@@ -77,6 +89,11 @@ public class Configuration {
         return new DefaultCommandGateway(bus);
     }
 
+
+    @Bean
+    public GenericJpaRepository<Order> jpaRepository(EntityManagerFactory emf) {
+        return new GenericJpaRepository<>(new SimpleEntityManagerProvider(emf.createEntityManager()), Order.class);
+    }
 
 
 

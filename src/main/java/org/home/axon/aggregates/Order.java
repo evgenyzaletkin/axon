@@ -3,10 +3,18 @@ package org.home.axon.aggregates;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.home.axon.events.OrderCreatedEvent;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Order extends AbstractAnnotatedAggregateRoot<String> {
 
+    @Id
     private String orderName;
+    @Column
     private String customer;
+    @Column
     private String description;
 
     public Order() {

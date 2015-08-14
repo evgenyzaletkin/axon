@@ -4,6 +4,7 @@ import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
 import org.home.axon.aggregates.Order;
 import org.home.axon.commands.CreateNewOrder;
+import org.springframework.transaction.annotation.Transactional;
 
 public class OrderCommandHandler {
 
@@ -20,7 +21,7 @@ public class OrderCommandHandler {
      * @return The result of the command processing, if any.
      * @throws Throwable any exception that occurs during command handling
      */
-    @CommandHandler()
+    @CommandHandler
     public void handle(CreateNewOrder commandMessage) throws Throwable {
         Order order = new Order(commandMessage.getOrderName(), commandMessage.getCustomer(), commandMessage.getDescription());
         ordersRepository.add(order);
