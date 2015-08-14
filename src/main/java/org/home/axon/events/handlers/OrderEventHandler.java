@@ -7,6 +7,6 @@ public class OrderEventHandler {
 
     @EventHandler
     public void handleOrderCreation(OrderCreatedEvent event) {
-        throw new RuntimeException("Hello mofos");
+        System.out.println("Order created " + event);
     }
 }

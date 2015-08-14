@@ -3,13 +3,20 @@ package org.home.axon.events;
 import java.io.Serializable;
 
 public class OrderCreatedEvent implements Serializable {
-    private final String OrderName;
+    private final String orderName;
 
     public OrderCreatedEvent(String orderName) {
-        OrderName = orderName;
+        this.orderName = orderName;
     }
 
     public String getOrderName() {
-        return OrderName;
+        return orderName;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderCreatedEvent{" +
+                "orderName='" + orderName + '\'' +
+                '}';
     }
 }

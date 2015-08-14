@@ -8,6 +8,9 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.commandhandling.interceptors.BeanValidationInterceptor;
 
+import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventhandling.SimpleEventBus;
+import org.axonframework.eventhandling.annotation.AnnotationEventListenerBeanPostProcessor;
 import org.home.axon.aggregates.Order;
 import org.home.axon.commands.handlers.OrderCommandHandler;
 import org.home.axon.events.handlers.OrderEventHandler;
@@ -26,8 +29,15 @@ public class Configuration {
     }
 
     @Bean
-    public InMemoryRepository<Order> ordersRepository() {
-        return new InMemoryRepository<>(Order.class);
+    public EventBus eventBus() {
+        return new SimpleEventBus();
+    }
+
+    @Bean
+    public InMemoryRepository<Order> ordersRepository(EventBus eventBus) {
+        InMemoryRepository<Order> orderInMemoryRepository = new InMemoryRepository<>(Order.class);
+        orderInMemoryRepository.setEventBus(eventBus);
+        return orderInMemoryRepository;
     }
 
 
@@ -39,8 +49,8 @@ public class Configuration {
     }
 
     @Bean
-    public OrderCommandHandler orderCommandHandler() {
-        return new OrderCommandHandler(ordersRepository());
+    public OrderCommandHandler orderCommandHandler(InMemoryRepository<Order> repository) {
+        return new OrderCommandHandler(repository);
     }
 
     @Bean
@@ -52,6 +62,13 @@ public class Configuration {
     public AnnotationCommandHandlerBeanPostProcessor annotationCommandHandlerBeanPostProcessor(CommandBus commandBus) {
         AnnotationCommandHandlerBeanPostProcessor bpp = new AnnotationCommandHandlerBeanPostProcessor();
         bpp.setCommandBus(commandBus);
+        return bpp;
+    }
+
+    @Bean
+    public AnnotationEventListenerBeanPostProcessor eventListenerBeanPostProcessor(EventBus eventBus) {
+        AnnotationEventListenerBeanPostProcessor bpp = new AnnotationEventListenerBeanPostProcessor();
+        bpp.setEventBus(eventBus);
         return bpp;
     }
 
