@@ -6,18 +6,12 @@ import org.home.axon.commands.CreateNewOrder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 public class AxonCommandsService {
 
     private final CommandGateway gateway;
-    private final EntityManagerFactory entityManagerFactory;
 
-    public AxonCommandsService(CommandGateway gateway,
-                               EntityManagerFactory entityManagerFactory) {
+    public AxonCommandsService(CommandGateway gateway) {
         this.gateway = gateway;
-        this.entityManagerFactory = entityManagerFactory;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -27,8 +21,6 @@ public class AxonCommandsService {
         order.setDescription("From Hell");
         order.setCustomer("Vasya");
         order.setOrderName("555");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.flush();
         gateway.sendAndWait(command);
 
     }

@@ -1,12 +1,12 @@
 package org.home.axon.config;
 
 import org.h2.Driver;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -26,10 +26,13 @@ public class OrmConfiguration {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean  localContainerEntityManagerFactoryBean() {
+    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
+//        bean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         bean.setDataSource(dataSource());
-        bean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        HibernateJpaVendorAdapter jpaVendor = new HibernateJpaVendorAdapter();
+        jpaVendor.setShowSql(true);
+        bean.setJpaVendorAdapter(jpaVendor);
         return bean;
     }
 
@@ -37,4 +40,6 @@ public class OrmConfiguration {
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
+
+
 }

@@ -7,7 +7,8 @@ import org.axonframework.commandhandling.annotation.AnnotationCommandHandlerBean
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.commandhandling.interceptors.BeanValidationInterceptor;
-import org.axonframework.common.jpa.SimpleEntityManagerProvider;
+import org.axonframework.common.jpa.ContainerManagedEntityManagerProvider;
+import org.axonframework.common.jpa.EntityManagerProvider;
 import org.axonframework.eventhandling.EventBus;
 import org.axonframework.eventhandling.SimpleEventBus;
 import org.axonframework.eventhandling.annotation.AnnotationEventListenerBeanPostProcessor;
@@ -36,6 +37,7 @@ public class AxonConfiguration {
         return Collections.singletonList(new BeanValidationInterceptor());
     }
 
+
     @Bean
     public EventBus eventBus() {
         return new SimpleEventBus();
@@ -50,7 +52,7 @@ public class AxonConfiguration {
 
     @Bean
     public AxonCommandsService axonCommandsService(CommandGateway commandGateway, EntityManagerFactory emf) {
-        return new AxonCommandsService(commandGateway, emf);
+        return new AxonCommandsService(commandGateway);
     }
 
     @Bean
@@ -91,8 +93,15 @@ public class AxonConfiguration {
 
 
     @Bean
-    public GenericJpaRepository<Order> jpaRepository(EntityManagerFactory emf) {
-        return new GenericJpaRepository<>(new SimpleEntityManagerProvider(emf.createEntityManager()), Order.class);
+    public GenericJpaRepository<Order> jpaRepository(EntityManagerProvider entityManagerProvider, EventBus eventBus) {
+        GenericJpaRepository<Order> repository = new GenericJpaRepository<>(entityManagerProvider, Order.class);
+        repository.setEventBus(eventBus);
+        return repository;
+    }
+
+    @Bean
+    public EntityManagerProvider entityManagerProvider() {
+        return new ContainerManagedEntityManagerProvider();
     }
 
 
